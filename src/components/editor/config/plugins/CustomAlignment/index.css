@@ -1,0 +1,28 @@
+.editor-alignment-container {
+  display: flex;
+  align-items: center;
+  padding-left: 8px;
+  margin-left: 4px;
+  border-left: 1px solid rgba(201, 201, 204, 0.48);
+}
+
+.ce-alignment--left {
+  text-align: left;
+  display: inline-block;
+  width: 100%;
+}
+.ce-alignment--center {
+  text-align: center;
+  display: inline-block;
+  width: 100%;
+}
+.ce-alignment--right {
+  text-align: right;
+  display: inline-block;
+  width: 100%;
+}
+.ce-alignment--justify {
+  text-align: justify;
+  display: inline-block;
+  width: 100%;
+}
