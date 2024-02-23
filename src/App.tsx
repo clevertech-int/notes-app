@@ -1,20 +1,23 @@
+import { useState } from 'react';
 import Editor, { OnChangeEditor } from './components/editor/editor';
+import { io } from 'socket.io-client';
+
+export const socket = io('http://localhost:3000');
 
 function App() {
+  const [content, setContent] = useState({ blocks: [] });
+
   const handleEditorChange: OnChangeEditor = (api) => {
     api.saver.save().then(async (outputData) => {
-      console.log(outputData);
-      await fetch('http://localhost:3002/block', {
-        method: 'POST',
-        body: JSON.stringify(outputData),
-        headers: {
-          'Content-type': 'application/json; charset=UTF-8',
-        },
-      });
+      socket.emit('createNote', outputData);
     });
   };
 
-  return <Editor onChange={handleEditorChange} />;
+  socket.on('noteCreated', (data) => {
+    setContent(data);
+  });
+
+  return <Editor onChange={handleEditorChange} data={content} />;
 }
 
 export default App;
