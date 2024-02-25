@@ -1,5 +1,5 @@
 import { API } from '@editorjs/editorjs';
-import { mentionsService } from '../../../../../services';
+import { mentionsService } from '../../../../../data';
 import { TMention, TNotes, TUser } from '../../../../../types/types';
 
 export default class InlineMention {

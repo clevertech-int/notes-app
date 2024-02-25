@@ -1,8 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Editor, { OnChangeEditor } from './components/editor/editor';
-import { io } from 'socket.io-client';
-
-export const socket = io('http://localhost:3000');
+import { socket } from './data';
 
 function App() {
   const [content, setContent] = useState({ blocks: [] });
@@ -13,9 +11,11 @@ function App() {
     });
   };
 
-  socket.on('noteCreated', (data) => {
-    setContent(data);
-  });
+  useEffect(() => {
+    socket.on('noteCreated', (data) => {
+      setContent(data);
+    });
+  }, []);
 
   return <Editor onChange={handleEditorChange} data={content} />;
 }
