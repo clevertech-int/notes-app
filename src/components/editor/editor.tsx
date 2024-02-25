@@ -25,6 +25,7 @@ export interface UseEditorProps {
 
 export function Editor({ data, onChange, placeholder = 'Type your text here' }: UseEditorProps) {
   const [editorJS, setEditorJS] = useState<EditorJS | null>(null);
+  const [locked, setLocked] = useState(-1);
 
   useEffect(() => {
     setEditorJS((prev) => {
@@ -61,12 +62,13 @@ export function Editor({ data, onChange, placeholder = 'Type your text here' }: 
         const focusIndex = editorJS.blocks.getCurrentBlockIndex();
         if (focusIndex >= 0) {
           socket.emit('lock', focusIndex);
+          setLocked(focusIndex);
         }
       };
       const focusOut = async () => {
-        const focusIndex = editorJS.blocks.getCurrentBlockIndex();
-        if (focusIndex >= 0) {
-          socket.emit('unlock', focusIndex);
+        if (locked >= 0) {
+          socket.emit('unlock', locked);
+          setLocked(-1);
         }
       };
 
@@ -78,7 +80,7 @@ export function Editor({ data, onChange, placeholder = 'Type your text here' }: 
         editorElement?.removeEventListener('focusout', focusOut);
       };
     }
-  }, [editorJS]);
+  }, [editorJS, locked]);
 
   useEffect(() => {
     const renderData = async () => {
@@ -105,12 +107,13 @@ export function Editor({ data, onChange, placeholder = 'Type your text here' }: 
               currentBlock = editorJS.blocks.getById(block.id);
 
               if (currentBlock) {
+                const index = editorJS.blocks.getBlockIndex(currentBlock.id);
+
                 const currentBlockData = currentData.blocks.find((b) => b.id === block.id)?.data;
-                if (!isEqualWith(currentBlockData, block.data)) {
+                if (!isEqualWith(currentBlockData, block.data) && index !== locked) {
                   await editorJS.blocks.update(currentBlock.id, block.data);
                 }
 
-                const index = editorJS.blocks.getBlockIndex(currentBlock.id);
                 if (index !== i) {
                   editorJS.blocks.move(index, i);
                 }
@@ -134,7 +137,7 @@ export function Editor({ data, onChange, placeholder = 'Type your text here' }: 
     };
 
     renderData();
-  }, [editorJS, data]);
+  }, [editorJS, data, locked]);
 
   return <div id="editorjs" />;
 }
