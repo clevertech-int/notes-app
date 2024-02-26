@@ -49,4 +49,12 @@ export default defineConfig({
     environment: 'jsdom',
     include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
   },
+  resolve: {
+    alias: {
+      src: '/src',
+      '@notes/components': '/src/components/index.ts',
+      '@notes/data': '/src/data/index.ts',
+      '@notes/types': '/src/types/types.ts',
+    },
+  },
 });
