@@ -12,6 +12,9 @@ function App() {
   };
 
   useEffect(() => {
+    socket.emit('findOneNote', 'note-1', (data: any) => {
+      setContent(data);
+    });
     socket.on('noteCreated', (data) => {
       setContent(data);
     });
