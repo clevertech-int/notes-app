@@ -7,7 +7,7 @@ function App() {
 
   const handleEditorChange: OnChangeEditor = (api) => {
     api.saver.save().then(async (outputData) => {
-      socket.emit('createNote', outputData);
+      socket.emit('createNote', { noteId: 'note-1', ...outputData });
     });
   };
 
