@@ -31,6 +31,10 @@ export function NotePage() {
       setTitle('');
       setContent({ blocks: [] });
 
+      socket.emit('findOneNote', noteId, (data: any) => {
+        setContent(data);
+      });
+
       socket.on('noteCreated', (data) => {
         if (data.noteId === noteId) {
           setContent(data);

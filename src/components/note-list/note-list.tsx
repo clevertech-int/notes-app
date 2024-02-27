@@ -4,12 +4,12 @@ import styles from './note-list.module.less';
 import { NoteCard } from '..';
 import { IconPlus } from '@tabler/icons-react';
 
-export interface NoteCardProps {
+export interface NoteListProps {
   notes: TNote[];
   peekedNotes: TNote[];
 }
 
-export function NoteList({ notes, peekedNotes }: NoteCardProps) {
+export function NoteList({ notes, peekedNotes }: NoteListProps) {
   const createNote = () => {
     // TODO: Create a new note
   };

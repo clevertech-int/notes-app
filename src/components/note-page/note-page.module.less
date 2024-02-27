@@ -7,7 +7,7 @@
 .section {
   padding: 16px;
   border-radius: 4px;
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .content {
@@ -45,7 +45,7 @@
 }
 
 .peekList {
-  margin: 24px -17px -17px;
+  margin: 24px -16px -16px;
   flex: 1;
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
@@ -53,17 +53,24 @@
 
   .peekCollapse {
     border-radius: 0;
+    border: 0;
     height: 100%;
     display: flex;
     flex-direction: column;
 
     :global(.ant-collapse-header) {
+      background-color: rgba(22, 119, 255, 0.03);
       align-items: center !important;
+      border-radius: 0 !important;
+    }
+    :global(.ant-collapse-content) {
+      border: 0;
     }
   }
 
   .peekCard {
     border-radius: 0 !important;
+    border: 0;
 
     &:global(.ant-collapse-item-active) {
       flex: 1;
