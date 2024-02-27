@@ -126,21 +126,17 @@ export default class InlineMention {
             a.href = user.id;
           }
           a.addEventListener('click', async (e) => {
+            console.log('Click ...');
             e.preventDefault();
             const refs = document.getElementById('refs');
+            console.log({ refs });
             if (refs) {
               refs.innerHTML = '';
+              // check if this is correct
               const id = (e.target as HTMLAnchorElement).href.replace('http://localhost:3000/', '');
+              const items = await socket.emitWithAck('searchNoteBlocks', { uuid: id });
 
-              const response = await fetch(`http://localhost:3002/search/blocks/with-tag/${id}`, {
-                method: 'GET',
-                headers: {
-                  'Content-type': 'application/json; charset=UTF-8',
-                },
-              });
-
-              const items = (await response.json()) as TBlock[];
-              items.forEach((i) => {
+              items.forEach((i: any) => {
                 const el = document.createElement('li');
                 el.innerHTML = `<a href="#">[note#${i.noteId}]</a> ${i.text}`;
                 refs.appendChild(el);
