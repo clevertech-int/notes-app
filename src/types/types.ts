@@ -1,6 +1,6 @@
 export type TMention = {
-  entityId: string;
-  title: string;
+  uuid: string;
+  name: string;
 };
 
 export type TUser = {

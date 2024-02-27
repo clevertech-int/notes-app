@@ -1,5 +1,6 @@
 import { API } from '@editorjs/editorjs';
 import { TMention, TUser } from '@notes/types';
+import { socket } from '../socket/socket';
 
 const trigger = '@';
 
@@ -18,7 +19,6 @@ export const mentionsService = {
         } else if (currentBlock.name === 'list') {
           el = currentBlock.holder.querySelector('.cdx-nested-list__item-content');
         }
-        console.log(el);
 
         const regex = new RegExp(`${trigger}$`);
         if (!el || !el.innerHTML.match(regex)) {
@@ -36,18 +36,12 @@ export const mentionsService = {
     if (!q) {
       return [];
     }
-    const response = await fetch(`http://localhost:3002/search/notes`, {
-      method: 'GET',
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8',
-      },
-    });
 
-    const data = (await response.json()) as TMention[];
+    const data: TMention[] = await socket.emitWithAck('findAllTags');
     const items = data
       .map((i) => ({
-        id: i.entityId,
-        name: i.title,
+        id: i.uuid,
+        name: i.name,
       }))
       .filter((user) => (q ? user.name.toLowerCase().startsWith(q.toLowerCase()) : true));
 

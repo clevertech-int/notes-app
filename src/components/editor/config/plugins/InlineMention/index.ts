@@ -56,12 +56,12 @@ export default class InlineMention {
     return document.createElement('span');
   }
 
-  // surround(range) {}
+  surround(range: any) {
+    console.log('surround', range);
+  }
 
   checkState() {
     const a = this.api.selection.findParentTag('A') as HTMLAnchorElement;
-
-    console.log(a, a.rel);
 
     this.state = a.rel === 'tag';
 
@@ -106,6 +106,7 @@ export default class InlineMention {
 
   getMentions(q?: string) {
     mentionsService.getMentions(q).then((users) => {
+      console.log('users', users);
       if (this.nodes.userList) {
         this.nodes.userList.innerHTML = '';
       }
@@ -127,7 +128,7 @@ export default class InlineMention {
           if (user.id === '0') {
             const data = await this.createNewTag(user);
             a.innerHTML = '@' + user.name;
-            a.href = data.entityId;
+            a.href = data.uuid;
           } else {
             a.innerHTML = '@' + user.name;
             a.href = user.id;
