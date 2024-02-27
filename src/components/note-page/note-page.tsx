@@ -4,31 +4,29 @@ import { socket } from '@notes/data';
 import { Editor, NoteList, OnChangeEditor, Sidebar } from '@notes/components';
 import styles from './note-page.module.less';
 import cn from 'classnames';
-import { Button, Col, Collapse, Input, Row, Typography } from 'antd';
+import { Button, Col, Collapse, Row, Typography } from 'antd';
 import { IconX } from '@tabler/icons-react';
 
 const { Text } = Typography;
 
 const notes = [
-  { id: 'note-1', title: 'Note 1', author: 'anonymous' },
-  { id: 'note-2', title: 'Note 2', author: 'anonymous' },
-  { id: 'note-3', title: 'Note 3', author: 'anonymous' },
-  { id: 'note-4', title: 'Note 4', author: 'anonymous' },
+  { id: 'note-1', author: 'anonymous' },
+  { id: 'note-2', author: 'anonymous' },
+  { id: 'note-3', author: 'anonymous' },
+  { id: 'note-4', author: 'anonymous' },
 ];
 const peekedNotes = [
-  { id: 'note-1', title: 'Note 1', author: 'anonymous' },
-  { id: 'note-4', title: 'Note 4', author: 'anonymous' },
+  { id: 'note-1', author: 'anonymous' },
+  { id: 'note-4', author: 'anonymous' },
 ];
 
 export function NotePage() {
   const { noteId } = useParams();
 
-  const [title, setTitle] = useState('');
   const [content, setContent] = useState({ blocks: [] });
 
   useEffect(() => {
     if (noteId) {
-      setTitle('');
       setContent({ blocks: [] });
 
       socket.emit('findOneNote', noteId, (data: any) => {
@@ -60,16 +58,7 @@ export function NotePage() {
         <Row className={styles.content}>
           <Col flex={1} className={styles.section}>
             {noteId ? (
-              <>
-                <Input
-                  size="large"
-                  placeholder="Note title"
-                  variant="borderless"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                />
-                <Editor onChange={handleEditorChange} data={content} />
-              </>
+              <Editor onChange={handleEditorChange} data={content} />
             ) : (
               <div className={styles.unselectedNoteMessage}>
                 <p>Select a note beside</p>
@@ -89,7 +78,7 @@ export function NotePage() {
               key: note.id,
               label: (
                 <Row wrap={false} justify="space-between" align="middle">
-                  <Text>{note.title}</Text>
+                  <Text>{note.id}</Text>
                   <Button type="link" onClick={(e) => e.stopPropagation()}>
                     <IconX size={16} />
                   </Button>

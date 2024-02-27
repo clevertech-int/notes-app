@@ -32,7 +32,7 @@ export function NoteCard({ note, pinned }: NoteCardProps) {
       onClick={() => !isSelectedNote && navigate(`/notes/${note.id}`)}
     >
       <Col>
-        <Text className={styles.cardTitle}>{note.title}</Text>
+        <Text className={styles.cardTitle}>{note.id}</Text>
         <Text className={styles.cardAuthor}>{note.author}</Text>
       </Col>
       <Col>

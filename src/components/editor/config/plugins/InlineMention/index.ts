@@ -1,6 +1,6 @@
 import { API } from '@editorjs/editorjs';
-import { mentionsService, socket } from '../../../../../data';
-import { TBlock, TUser } from '../../../../../types/types';
+import { mentionsService, socket } from '@notes/data';
+import { TMention, TBlock, TUser } from '@notes/types';
 
 export default class InlineMention {
   private api: API;
@@ -92,7 +92,7 @@ export default class InlineMention {
     return this.wrapper;
   }
 
-  async createNewTag(user: TUser): Promise<any> {
+  async createNewTag(user: TUser): Promise<TMention> {
     return socket.emitWithAck('createTag', user);
   }
 

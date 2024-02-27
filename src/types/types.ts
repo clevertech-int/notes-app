@@ -15,6 +15,5 @@ export type TBlock = {
 
 export type TNote = {
   id: string;
-  title: string;
   author: string;
 };

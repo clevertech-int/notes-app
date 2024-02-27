@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import EditorJS, {
   API,
   BlockAPI,
@@ -25,7 +25,8 @@ export interface UseEditorProps {
 
 export function Editor({ data, onChange, placeholder = 'Type your text here' }: UseEditorProps) {
   const [editorJS, setEditorJS] = useState<EditorJS | null>(null);
-  const [locked, setLocked] = useState(-1);
+
+  const locked = useRef(-1);
 
   useEffect(() => {
     setEditorJS((prev) => {
@@ -60,15 +61,17 @@ export function Editor({ data, onChange, placeholder = 'Type your text here' }: 
       const focusIn = async () => {
         await editorJS.isReady;
         const focusIndex = editorJS.blocks.getCurrentBlockIndex();
+        console.log('focusIn', focusIndex);
         if (focusIndex >= 0) {
           socket.emit('lock', focusIndex);
-          setLocked(focusIndex);
+          locked.current = focusIndex;
         }
       };
       const focusOut = async () => {
-        if (locked >= 0) {
+        console.log('focusOut', locked);
+        if (locked.current >= 0) {
           socket.emit('unlock', locked);
-          setLocked(-1);
+          locked.current = -1;
         }
       };
 
@@ -110,7 +113,7 @@ export function Editor({ data, onChange, placeholder = 'Type your text here' }: 
                 const index = editorJS.blocks.getBlockIndex(currentBlock.id);
 
                 const currentBlockData = currentData.blocks.find((b) => b.id === block.id)?.data;
-                if (!isEqualWith(currentBlockData, block.data) && index !== locked) {
+                if (!isEqualWith(currentBlockData, block.data) && index !== locked.current) {
                   await editorJS.blocks.update(currentBlock.id, block.data);
                 }
 
@@ -135,7 +138,7 @@ export function Editor({ data, onChange, placeholder = 'Type your text here' }: 
     };
 
     renderData();
-  }, [editorJS, data, locked]);
+  }, [editorJS, data]);
 
   return <div id="editorjs" />;
 }
