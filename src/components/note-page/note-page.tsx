@@ -66,7 +66,9 @@ export function NotePage() {
               </div>
             )}
           </Col>
-          <Col className={cn(styles.section, styles.tags)}>Tags</Col>
+          <Col className={cn(styles.section, styles.tags)} id="refs">
+            Tags
+          </Col>
         </Row>
       </Col>
       <Sidebar id="notes-peek" title="Notes peek" side="right">

@@ -1,6 +1,6 @@
 import { API } from '@editorjs/editorjs';
 import { mentionsService, socket } from '@notes/data';
-import { TMention, TBlock, TUser } from '@notes/types';
+import { TMention, TUser } from '@notes/types';
 
 export default class InlineMention {
   private api: API;
@@ -129,16 +129,18 @@ export default class InlineMention {
             console.log('Click ...');
             e.preventDefault();
             const refs = document.getElementById('refs');
-            console.log({ refs });
             if (refs) {
               refs.innerHTML = '';
               // check if this is correct
-              const id = (e.target as HTMLAnchorElement).href.replace('http://localhost:3000/', '');
+              const id = (e.target as HTMLAnchorElement).href.replace(
+                'http://localhost:5173/notes/',
+                '',
+              );
               const items = await socket.emitWithAck('searchNoteBlocks', { uuid: id });
 
               items.forEach((i: any) => {
                 const el = document.createElement('li');
-                el.innerHTML = `<a href="#">[note#${i.noteId}]</a> ${i.text}`;
+                el.innerHTML = `<a href="#">[note#${i.noteId}]</a> ${i.body}`;
                 refs.appendChild(el);
               });
             }
