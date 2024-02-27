@@ -6,6 +6,7 @@ import styles from './note-page.module.less';
 import cn from 'classnames';
 import { Button, Col, Collapse, Row, Typography } from 'antd';
 import { IconX } from '@tabler/icons-react';
+import { OutputData } from '@editorjs/editorjs';
 
 const { Text } = Typography;
 
@@ -23,17 +24,17 @@ const peekedNotes = [
 export function NotePage() {
   const { noteId } = useParams();
 
-  const [content, setContent] = useState({ blocks: [] });
+  const [content, setContent] = useState<OutputData | undefined>({ blocks: [] });
 
   useEffect(() => {
     if (noteId) {
-      setContent({ blocks: [] });
+      setContent(undefined);
 
-      socket.emit('findOneNote', noteId, (data: any) => {
+      socket.emit('findOneNote', noteId, (data: OutputData) => {
         setContent(data);
       });
 
-      socket.on('noteCreated', (data) => {
+      socket.on('noteCreated', (data: OutputData & { noteId: string }) => {
         if (data.noteId === noteId) {
           setContent(data);
         }
@@ -55,7 +56,7 @@ export function NotePage() {
         <NoteList notes={notes} peekedNotes={peekedNotes} />
       </Sidebar>
       <Col flex={1}>
-        <Row className={styles.content}>
+        <Row className={styles.content} wrap={false}>
           <Col flex={1} className={styles.section}>
             {noteId ? (
               <Editor onChange={handleEditorChange} data={content} />

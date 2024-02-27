@@ -61,14 +61,12 @@ export function Editor({ data, onChange, placeholder = 'Type your text here' }: 
       const focusIn = async () => {
         await editorJS.isReady;
         const focusIndex = editorJS.blocks.getCurrentBlockIndex();
-        console.log('focusIn', focusIndex);
         if (focusIndex >= 0) {
           socket.emit('lock', focusIndex);
           locked.current = focusIndex;
         }
       };
       const focusOut = async () => {
-        console.log('focusOut', locked);
         if (locked.current >= 0) {
           socket.emit('unlock', locked);
           locked.current = -1;
@@ -133,6 +131,8 @@ export function Editor({ data, onChange, placeholder = 'Type your text here' }: 
               }
             }
           }
+        } else {
+          editorJS.clear();
         }
       }
     };
