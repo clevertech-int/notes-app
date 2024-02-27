@@ -1,6 +1,6 @@
 import { API } from '@editorjs/editorjs';
-import { mentionsService } from '../../../../../data';
-import { TMention, TBlock, TUser } from '../../../../../types/types';
+import { mentionsService, socket } from '../../../../../data';
+import { TBlock, TUser } from '../../../../../types/types';
 
 export default class InlineMention {
   private api: API;
@@ -92,16 +92,8 @@ export default class InlineMention {
     return this.wrapper;
   }
 
-  async createNewTag(user: TUser): Promise<TMention> {
-    const response = await fetch('http://localhost:3002/note', {
-      method: 'POST',
-      body: JSON.stringify(user),
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8',
-      },
-    });
-
-    return response.json();
+  async createNewTag(user: TUser): Promise<any> {
+    return socket.emitWithAck('createTag', user);
   }
 
   getMentions(q?: string) {
