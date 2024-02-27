@@ -30,27 +30,29 @@ export function Editor({ data, onChange, placeholder = 'Type your text here' }: 
 
   useEffect(() => {
     setEditorJS((prev) => {
-      if (!prev) {
-        const editor = new EditorJS({
-          holder: 'editorjs',
-          onChange,
-          placeholder,
-          tools: editorConfig as unknown as {
-            [toolName: string]: ToolConstructable | ToolSettings;
-          },
-          autofocus: true,
-          minHeight: 100,
-          onReady: () => {
-            mentionsService.init(editor as any);
-            new CustomUndo({ editor });
-            new DragDrop(editor, '2px dashed rgba(87, 103, 161, 0.5)');
-          },
-        });
-
-        return editor;
+      if (prev?.destroy) {
+        prev.destroy();
+      } else if (prev) {
+        return prev;
       }
 
-      return prev;
+      const editor = new EditorJS({
+        holder: 'editorjs',
+        onChange,
+        placeholder,
+        tools: editorConfig as unknown as {
+          [toolName: string]: ToolConstructable | ToolSettings;
+        },
+        autofocus: true,
+        minHeight: 100,
+        onReady: () => {
+          mentionsService.init(editor as any);
+          new CustomUndo({ editor });
+          new DragDrop(editor, '2px dashed rgba(87, 103, 161, 0.5)');
+        },
+      });
+
+      return editor;
     });
   }, [onChange, placeholder]);
 
@@ -131,8 +133,6 @@ export function Editor({ data, onChange, placeholder = 'Type your text here' }: 
               }
             }
           }
-        } else {
-          editorJS.clear();
         }
       }
     };

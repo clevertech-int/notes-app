@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { socket } from '@notes/data';
 import { Editor, NoteList, OnChangeEditor, Sidebar } from '@notes/components';
@@ -21,20 +21,20 @@ const peekedNotes = [
   { id: 'note-4', author: 'anonymous' },
 ];
 
+type TContent = OutputData & { noteId: string };
+
 export function NotePage() {
   const { noteId } = useParams();
 
-  const [content, setContent] = useState<OutputData | undefined>({ blocks: [] });
+  const [content, setContent] = useState<TContent | undefined>();
 
   useEffect(() => {
     if (noteId) {
-      setContent(undefined);
-
-      socket.emit('findOneNote', noteId, (data: OutputData) => {
+      socket.emit('findOneNote', noteId, (data: TContent) => {
         setContent(data);
       });
 
-      socket.on('noteCreated', (data: OutputData & { noteId: string }) => {
+      socket.on('noteCreated', (data: TContent) => {
         if (data.noteId === noteId) {
           setContent(data);
         }
@@ -42,13 +42,16 @@ export function NotePage() {
     }
   }, [noteId]);
 
-  const handleEditorChange: OnChangeEditor = (api) => {
-    if (noteId) {
-      api.saver.save().then(async (outputData) => {
-        socket.emit('createNote', { noteId, ...outputData });
-      });
-    }
-  };
+  const handleEditorChange: OnChangeEditor = useCallback(
+    async (api) => {
+      if (noteId) {
+        const outputData = await api.saver.save();
+        const newContent = { noteId, ...outputData };
+        socket.emit('createNote', newContent);
+      }
+    },
+    [noteId],
+  );
 
   return (
     <Row wrap={false} gutter={16} className={styles.container}>
@@ -58,7 +61,7 @@ export function NotePage() {
       <Col flex={1}>
         <Row className={styles.content} wrap={false}>
           <Col flex={1} className={styles.section}>
-            {noteId ? (
+            {noteId && content?.noteId === noteId ? (
               <Editor onChange={handleEditorChange} data={content} />
             ) : (
               <div className={styles.unselectedNoteMessage}>
