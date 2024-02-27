@@ -125,26 +125,6 @@ export default class InlineMention {
             a.innerHTML = '@' + user.name;
             a.href = user.id;
           }
-          a.addEventListener('click', async (e) => {
-            console.log('Click ...');
-            e.preventDefault();
-            const refs = document.getElementById('refs');
-            if (refs) {
-              refs.innerHTML = '';
-              // check if this is correct
-              const id = (e.target as HTMLAnchorElement).href.replace(
-                'http://localhost:5173/notes/',
-                '',
-              );
-              const items = await socket.emitWithAck('searchNoteBlocks', { uuid: id });
-
-              items.forEach((i: any) => {
-                const el = document.createElement('li');
-                el.innerHTML = `<a href="#">[note#${i.noteId}]</a> ${i.body}`;
-                refs.appendChild(el);
-              });
-            }
-          });
 
           a.insertAdjacentHTML('afterend', '&nbsp;');
           this.setCursor(a.nextSibling as Node, 1);

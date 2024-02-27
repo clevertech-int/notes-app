@@ -140,6 +140,36 @@ export function Editor({ data, onChange, placeholder = 'Type your text here' }: 
     renderData();
   }, [editorJS, data]);
 
+  useEffect(() => {
+    const tags = document.querySelectorAll('a[rel="tag"]');
+
+    const listener = async (e: any) => {
+      e.preventDefault();
+      const refs = document.getElementById('refs');
+      if (refs) {
+        refs.innerHTML = '';
+        const id = (e.target as HTMLAnchorElement).href.replace('http://localhost:5173/notes/', '');
+        const items = await socket.emitWithAck('searchNoteBlocks', { uuid: id });
+
+        items.forEach((i: any) => {
+          const el = document.createElement('li');
+          el.innerHTML = `<a href="#">[note#${i.noteId}]</a> ${i.body}`;
+          refs.appendChild(el);
+        });
+      }
+    };
+
+    tags.forEach((tag) => {
+      tag.addEventListener('click', listener);
+    });
+
+    return () => {
+      tags.forEach((tag) => {
+        tag.removeEventListener('click', listener);
+      });
+    };
+  }, [data]);
+
   return <div id="editorjs" />;
 }
 
