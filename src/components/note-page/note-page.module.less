@@ -17,17 +17,24 @@
   .section {
     padding: 24px 74px 16px;
 
-    input {
-      padding: 0;
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 16px;
-      border-radius: 0;
-    }
-
     :global(.ce-block__content),
     :global(.ce-toolbar__content) {
       max-width: none;
+    }
+
+    :global(ul.tiny) {
+      padding: 0;
+      background: white;
+      margin: 0;
+
+      li {
+        list-style: none;
+        padding: 8px 16px;
+
+        &:global(.bg-muted) {
+          background-color: rgba(22, 119, 255, 0.05);
+        }
+      }
     }
   }
 }
