@@ -1,0 +1,76 @@
+.container {
+  height: 100vh;
+  padding: 16px 8px;
+  margin: 0 !important;
+}
+
+.section {
+  padding: 16px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.content {
+  height: 100%;
+  flex-direction: column;
+
+  .section {
+    padding: 24px 74px 16px;
+
+    input {
+      padding: 0;
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      border-radius: 0;
+    }
+
+    :global(.ce-block__content),
+    :global(.ce-toolbar__content) {
+      max-width: none;
+    }
+  }
+}
+
+.unselectedNoteMessage {
+  display: flex;
+  justify-content: center;
+  font-size: 18px;
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.tags {
+  margin-top: 16px;
+  min-height: 300px;
+}
+
+.peekList {
+  margin: 24px -17px -17px;
+  flex: 1;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  overflow: hidden;
+
+  .peekCollapse {
+    border-radius: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    :global(.ant-collapse-header) {
+      align-items: center !important;
+    }
+  }
+
+  .peekCard {
+    border-radius: 0 !important;
+
+    &:global(.ant-collapse-item-active) {
+      flex: 1;
+    }
+
+    button {
+      height: 26px;
+    }
+  }
+}

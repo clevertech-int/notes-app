@@ -1,6 +1,6 @@
 import { API } from '@editorjs/editorjs';
 import { mentionsService } from '../../../../../data';
-import { TMention, TNotes, TUser } from '../../../../../types/types';
+import { TMention, TBlock, TUser } from '../../../../../types/types';
 
 export default class InlineMention {
   private api: API;
@@ -61,7 +61,9 @@ export default class InlineMention {
   checkState() {
     const a = this.api.selection.findParentTag('A') as HTMLAnchorElement;
 
-    this.state = a?.rel === 'tag';
+    console.log(a, a.rel);
+
+    this.state = a.rel === 'tag';
 
     if (this.state) {
       this.showActions(a);
@@ -144,7 +146,7 @@ export default class InlineMention {
                 },
               });
 
-              const items = (await response.json()) as TNotes[];
+              const items = (await response.json()) as TBlock[];
               items.forEach((i) => {
                 const el = document.createElement('li');
                 el.innerHTML = `<a href="#">[note#${i.noteId}]</a> ${i.text}`;

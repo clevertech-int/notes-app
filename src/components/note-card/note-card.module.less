@@ -1,0 +1,28 @@
+.card {
+  border-radius: 4px;
+  padding: 16px;
+  margin: 4px 0;
+  cursor: pointer;
+
+  div {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &:not(.selected):hover {
+    background-color: rgba(22, 119, 255, 0.05);
+  }
+
+  &.selected {
+    background-color: rgba(22, 119, 255, 0.1);
+  }
+
+  .cardTitle {
+    font-weight: 600;
+  }
+
+  .cardAuthor {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.4);
+  }
+}

@@ -21,7 +21,6 @@ import { IconBrandYoutube } from '@tabler/icons-react';
 import InlineMention from './plugins/InlineMention';
 
 export const editorConfig = {
-  inlineMention: InlineMention,
   underline: {
     class: Underline,
     shortcut: 'CMD+U',
@@ -209,15 +208,11 @@ export const editorConfig = {
       cols: 3,
     },
   },
-  // LinkTool: {
-  //   class: LinkTool,
-  //   config: {
-  //     endpoint: `/api/${PluginId}/link`,
-  //   },
-  // },
   raw: {
     class: Raw,
     inlineToolbar: true,
   },
   delimiter: Delimiter,
+
+  inlineMention: InlineMention,
 };

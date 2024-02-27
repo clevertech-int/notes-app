@@ -12,7 +12,7 @@ import DragDrop from 'editorjs-drag-drop';
 import CustomUndo from './config/plugins/CustomUndo/CustomUndo';
 
 import './editor.module.less';
-import { mentionsService, socket } from '../../data';
+import { mentionsService, socket } from '@notes/data';
 import isEqualWith from 'lodash/isEqualWith';
 
 export type OnChangeEditor = (api: API, event: BlockMutationEvent | BlockMutationEvent[]) => void;
@@ -40,7 +40,7 @@ export function Editor({ data, onChange, placeholder = 'Type your text here' }: 
           autofocus: true,
           minHeight: 100,
           onReady: () => {
-            mentionsService.init(editor);
+            mentionsService.init(editor as any);
             new CustomUndo({ editor });
             new DragDrop(editor, '2px dashed rgba(87, 103, 161, 0.5)');
           },
@@ -130,8 +130,6 @@ export function Editor({ data, onChange, placeholder = 'Type your text here' }: 
               }
             }
           }
-        } else {
-          await editorJS.clear();
         }
       }
     };

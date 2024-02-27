@@ -8,7 +8,13 @@ export type TUser = {
   name: string;
 };
 
-export type TNotes = {
+export type TBlock = {
   noteId: string;
   text: string;
+};
+
+export type TNote = {
+  id: string;
+  title: string;
+  author: string;
 };

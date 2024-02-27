@@ -1,21 +1,24 @@
-import { TMention, TUser } from '../../types/types';
+import { API } from '@editorjs/editorjs';
+import { TMention, TUser } from '@notes/types';
 
 const trigger = '@';
 
 export const mentionsService = {
-  init: (editor: any) => {
-    editor.listeners.on(editor.ui.nodes.wrapper, 'keyup', (e: KeyboardEvent) => {
-      if (e.key === trigger) {
+  init: (editor: API) => {
+    editor.listeners.on(editor.ui.nodes.wrapper, 'keyup', (e) => {
+      if ((e as KeyboardEvent).key === trigger) {
         const currentIdx = editor.blocks.getCurrentBlockIndex();
         const currentBlock = editor.blocks.getBlockByIndex(currentIdx);
-        console.log(currentBlock);
+        if (!currentBlock) {
+          return;
+        }
         let el;
         if (currentBlock.name === 'paragraph') {
           el = currentBlock.holder.querySelector('.ce-paragraph');
         } else if (currentBlock.name === 'list') {
           el = currentBlock.holder.querySelector('.cdx-nested-list__item-content');
-          console.log(el);
         }
+        console.log(el);
 
         const regex = new RegExp(`${trigger}$`);
         if (!el || !el.innerHTML.match(regex)) {
@@ -24,7 +27,7 @@ export const mentionsService = {
 
         el.innerHTML = el.innerHTML.replace(regex, `<a rel="tag">${trigger}</a>`);
         const anchor = editor.ui.nodes.wrapper.querySelector('a[rel="tag"]:not([href])');
-        editor.selection.expandToTag(anchor);
+        editor.selection.expandToTag(anchor as HTMLElement);
       }
     });
   },
