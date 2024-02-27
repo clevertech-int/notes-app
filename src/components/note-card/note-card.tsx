@@ -17,8 +17,10 @@ export function NoteCard({ note, pinned }: NoteCardProps) {
   const { noteId } = useParams();
   const navigate = useNavigate();
 
-  const peekNote = () => {
-    socket.emit('notePeeked', note);
+  const peekNote = async (id: string) => {
+    console.log('peek note ...', id);
+    const note = await socket.emitWithAck('findOneNote', id);
+    console.log(note);
   };
 
   const isSelectedNote = noteId === note.id;
@@ -36,7 +38,7 @@ export function NoteCard({ note, pinned }: NoteCardProps) {
         <Text className={styles.cardAuthor}>{note.author}</Text>
       </Col>
       <Col>
-        <Button type="link" onClick={peekNote}>
+        <Button type="link" onClick={() => peekNote(note.id)}>
           {pinned ? <IconPinnedFilled size={20} /> : <IconPinned size={20} />}
         </Button>
       </Col>
