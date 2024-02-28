@@ -76,6 +76,17 @@ export function NotePage() {
     }
   };
 
+  const handleTagNoteClick =
+    (id: string): React.MouseEventHandler<HTMLAnchorElement> =>
+    (e) => {
+      if (e.shiftKey) {
+        e.preventDefault();
+        if (!peekedNotes.some((n) => n.noteId === id)) {
+          peekNote(id);
+        }
+      }
+    };
+
   return (
     <Row wrap={false} gutter={16} className={styles.container}>
       <Sidebar id="notes-list" title="List of notes" side="left">
@@ -95,14 +106,20 @@ export function NotePage() {
           <Col className={cn(styles.section, styles.tags)} id="refs">
             {tagsItems.map((item, i) => (
               <div key={item.noteId + i} className={styles.tagItem}>
-                <Link to={`/notes/${item.noteId}`}>{item.noteId}</Link>
+                <Link to={`/notes/${item.noteId}`} onClick={handleTagNoteClick(item.noteId)}>
+                  {item.noteId}
+                </Link>
                 <Button
                   type="link"
                   onClick={() => {
                     peekNote(item.noteId);
                   }}
                 >
-                  <IconPinned size={15} />
+                  {peekedNotes.some((n) => n.noteId === item.noteId) ? (
+                    <IconPinnedFilled size={16} />
+                  ) : (
+                    <IconPinned size={16} />
+                  )}
                 </Button>
                 <div dangerouslySetInnerHTML={{ __html: item.body }} />
               </div>
