@@ -3,6 +3,7 @@ import { TNote, TNoteContent } from '@notes/types';
 import styles from './note-list.module.less';
 import { NoteCard } from '..';
 import { IconPlus } from '@tabler/icons-react';
+import { socket } from '../../data';
 
 export interface NoteListProps {
   notes: TNote[];
@@ -11,8 +12,8 @@ export interface NoteListProps {
 }
 
 export function NoteList({ notes, peekedNotes, peekNote }: NoteListProps) {
-  const createNote = () => {
-    // TODO: Create a new note
+  const createNote = async () => {
+    await socket.emitWithAck('createNote');
   };
 
   return (

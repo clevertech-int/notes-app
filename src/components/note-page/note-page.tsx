@@ -6,14 +6,7 @@ import styles from './note-page.module.less';
 import cn from 'classnames';
 import { Col, Row } from 'antd';
 import { OutputData } from '@editorjs/editorjs';
-import { TNoteContent, TTag } from '@notes/types';
-
-const notes = [
-  { id: 'note-1', author: 'anonymous' },
-  { id: 'note-2', author: 'anonymous' },
-  { id: 'note-3', author: 'anonymous' },
-  { id: 'note-4', author: 'anonymous' },
-];
+import { TNote, TNoteContent, TTag } from '@notes/types';
 
 type TContent = OutputData & { noteId: string };
 
@@ -23,8 +16,14 @@ export function NotePage() {
   const [content, setContent] = useState<TContent | undefined>();
   const [peekedNotes, setPeekedNotes] = useState<TNoteContent[]>([]);
   const [expandedNotes, setExpandedNotes] = useState<string[]>([]);
+  const [notes, setNotes] = useState<TNote[]>([]);
 
   const [tagsItems, setTagsItems] = useState<TTag[]>([]);
+  useEffect(() => {
+    socket.emit('findAllNotes', (data: any) => {
+      setNotes(data);
+    });
+  }, []);
 
   useEffect(() => {
     if (noteId) {
@@ -32,20 +31,25 @@ export function NotePage() {
         setContent(data);
       });
 
-      socket.on('noteCreated', (data: TContent) => {
+      socket.on('noteUpdated', (data: TContent) => {
         if (data.noteId === noteId) {
           setContent(data);
         }
       });
     }
-  }, [noteId]);
+
+    socket.on('noteCreated', (data: TNote) => {
+      console.log([...notes, data]);
+      setNotes([...notes, data]);
+    });
+  }, [noteId, notes]);
 
   const handleEditorChange: OnChangeEditor = useCallback(
     async (api) => {
       if (noteId) {
         const outputData = await api.saver.save();
         const newContent = { noteId, ...outputData };
-        socket.emit('createNote', newContent);
+        socket.emit('updateNote', newContent);
       }
     },
     [noteId],
