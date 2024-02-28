@@ -42,6 +42,7 @@ export default defineConfig({
     }),
   ],
   preview: {
+    host: 'localhost',
     port: 8080,
   },
   test: {
