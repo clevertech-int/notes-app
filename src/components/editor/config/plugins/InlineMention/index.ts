@@ -56,9 +56,9 @@ export default class InlineMention {
     return document.createElement('span');
   }
 
-  // surround(range: any) {
-  //   console.log('surround', range);
-  // }
+  surround(range: any) {
+    console.log('surround', range);
+  }
 
   checkState() {
     const a = this.api.selection.findParentTag('A') as HTMLAnchorElement;
