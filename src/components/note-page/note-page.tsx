@@ -4,9 +4,10 @@ import { socket } from '@notes/data';
 import { Editor, NoteList, NotePeek, OnChangeEditor, Sidebar } from '@notes/components';
 import styles from './note-page.module.less';
 import cn from 'classnames';
-import { Col, Row } from 'antd';
+import { Col, Row, Button } from 'antd';
 import { OutputData } from '@editorjs/editorjs';
 import { TNote, TNoteContent, TTag } from '@notes/types';
+import { IconPinnedFilled, IconPinned } from '@tabler/icons-react';
 
 type TContent = OutputData & { noteId: string };
 
@@ -39,7 +40,6 @@ export function NotePage() {
     }
 
     socket.on('noteCreated', (data: TNote) => {
-      console.log([...notes, data]);
       setNotes([...notes, data]);
     });
   }, [noteId, notes]);
@@ -96,6 +96,14 @@ export function NotePage() {
             {tagsItems.map((item, i) => (
               <div key={item.noteId + i} className={styles.tagItem}>
                 <Link to={`/notes/${item.noteId}`}>{item.noteId}</Link>
+                <Button
+                  type="link"
+                  onClick={() => {
+                    peekNote(item.noteId);
+                  }}
+                >
+                  <IconPinned size={15} />
+                </Button>
                 <div dangerouslySetInnerHTML={{ __html: item.body }} />
               </div>
             ))}
