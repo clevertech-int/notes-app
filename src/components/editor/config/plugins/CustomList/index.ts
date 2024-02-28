@@ -128,8 +128,6 @@ export default class CustomList extends NestedList {
   }
 
   save() {
-    console.log(this.data);
-
     const getItems = (parent: Element): ListItem[] => {
       const children = Array.from(parent.querySelectorAll(`:scope > .${super.CSS.item}`));
 

@@ -4,23 +4,22 @@ import { TNote } from '@notes/types';
 import styles from './note-card.module.less';
 import cn from 'classnames';
 import { IconPinned, IconPinnedFilled } from '@tabler/icons-react';
-import { socket } from '@notes/data';
 
 const { Text } = Typography;
 
 export interface NoteCardProps {
   note: TNote;
   pinned?: boolean;
+  peekNote: (id: string) => Promise<void>;
 }
 
-export function NoteCard({ note, pinned }: NoteCardProps) {
+export function NoteCard({ note, pinned, peekNote }: NoteCardProps) {
   const { noteId } = useParams();
   const navigate = useNavigate();
 
-  const peekNote = async (id: string) => {
-    console.log('peek note ...', id);
-    const note = await socket.emitWithAck('findOneNote', id);
-    console.log(note);
+  const handlePeek: React.MouseEventHandler<HTMLElement> = (e) => {
+    e.stopPropagation();
+    peekNote(note.id);
   };
 
   const isSelectedNote = noteId === note.id;
@@ -38,9 +37,11 @@ export function NoteCard({ note, pinned }: NoteCardProps) {
         <Text className={styles.cardAuthor}>{note.author}</Text>
       </Col>
       <Col>
-        <Button type="link" onClick={() => peekNote(note.id)}>
-          {pinned ? <IconPinnedFilled size={20} /> : <IconPinned size={20} />}
-        </Button>
+        {!isSelectedNote && (
+          <Button type="link" onClick={handlePeek}>
+            {pinned ? <IconPinnedFilled size={20} /> : <IconPinned size={20} />}
+          </Button>
+        )}
       </Col>
     </Row>
   );

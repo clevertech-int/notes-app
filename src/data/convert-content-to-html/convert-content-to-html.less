@@ -1,0 +1,135 @@
+blockquote {
+  position: relative;
+  padding-left: 24px;
+  font-size: 18px;
+  margin: 32px 0;
+
+  p {
+    font-size: 14px;
+    margin-top: 8px;
+    color: #666;
+  }
+
+  &.center {
+    width: 100%;
+    padding-left: 0;
+    text-align: center;
+    p {
+      width: 100%;
+      text-align: center;
+    }
+  }
+
+  &.left:before {
+    content: ' ';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 6px;
+    border-radius: 4px;
+    background-color: #eee;
+  }
+}
+
+.warning-container {
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 16px;
+  background-color: #fff6dd;
+  border-radius: 8px;
+  margin: 32px 0;
+
+  .warning-icon {
+    margin-right: 16px;
+    min-width: 32px;
+  }
+
+  .warning-title {
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .warning-message {
+    color: #666;
+    margin-bottom: 0;
+  }
+}
+
+.block-code {
+  font-family: Menlo, Monaco, Consolas, Courier New, monospace;
+  color: #41314e;
+  line-height: 1.6em;
+  font-size: 12px;
+  background: #f8f7fa;
+  border: 1px solid #f1f1f4;
+  white-space: pre;
+  word-wrap: normal;
+  overflow-x: auto;
+  padding: 16px;
+  border-radius: 8px;
+  margin: 16px 0;
+}
+
+.checklist-item {
+  display: flex;
+  align-items: flex-start;
+
+  input[type='checkbox'] {
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    margin-right: 8px;
+    margin-top: 10px;
+
+    &:disabled {
+      background: #1890ff !important;
+    }
+  }
+}
+
+.page-embed {
+  position: relative;
+  padding-top: 56.25%;
+  height: 0;
+
+  iframe {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.img-fluid {
+  margin-top: 24px;
+  border-radius: 8px;
+  overflow: hidden;
+  width: fit-content;
+}
+.img-caption {
+  margin-bottom: 24px;
+}
+
+.img-fluid.withBorder {
+  border: 4px solid #5767a1;
+}
+.img-fluid.withBackground {
+  background: #cdd1e0;
+  padding: 16px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+
+  img {
+    max-width: 60%;
+  }
+}
+.img-fluid.stretched {
+  width: 100%;
+  img {
+    width: 100%;
+  }
+}

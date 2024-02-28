@@ -14,16 +14,25 @@ import CustomUndo from './config/plugins/CustomUndo/CustomUndo';
 import './editor.module.less';
 import { mentionsService, socket } from '@notes/data';
 import isEqualWith from 'lodash/isEqualWith';
+import { TTag } from '@notes/types';
 
 export type OnChangeEditor = (api: API, event: BlockMutationEvent | BlockMutationEvent[]) => void;
 
 export interface UseEditorProps {
+  id?: string;
   data?: OutputData;
   onChange: OnChangeEditor;
   placeholder?: string;
+  setTagsItems: (items: TTag[]) => void;
 }
 
-export function Editor({ data, onChange, placeholder = 'Type your text here' }: UseEditorProps) {
+export function Editor({
+  id,
+  data,
+  onChange,
+  placeholder = 'Type your text here',
+  setTagsItems,
+}: UseEditorProps) {
   const [editorJS, setEditorJS] = useState<EditorJS | null>(null);
 
   const locked = useRef(-1);
@@ -37,7 +46,7 @@ export function Editor({ data, onChange, placeholder = 'Type your text here' }: 
       }
 
       const editor = new EditorJS({
-        holder: 'editorjs',
+        holder: id || 'editorjs',
         onChange,
         placeholder,
         tools: editorConfig as unknown as {
@@ -54,7 +63,7 @@ export function Editor({ data, onChange, placeholder = 'Type your text here' }: 
 
       return editor;
     });
-  }, [onChange, placeholder]);
+  }, [id, onChange, placeholder]);
 
   useEffect(() => {
     if (editorJS) {
@@ -145,18 +154,9 @@ export function Editor({ data, onChange, placeholder = 'Type your text here' }: 
 
     const listener = async (e: any) => {
       e.preventDefault();
-      const refs = document.getElementById('refs');
-      if (refs) {
-        refs.innerHTML = '';
-        const id = (e.target as HTMLAnchorElement).href.replace('http://localhost:5173/notes/', '');
-        const items = await socket.emitWithAck('searchNoteBlocks', { uuid: id });
-
-        items.forEach((i: any) => {
-          const el = document.createElement('li');
-          el.innerHTML = `<a href="#">[note#${i.noteId}]</a> ${i.body}`;
-          refs.appendChild(el);
-        });
-      }
+      const id = (e.target as HTMLAnchorElement).href.replace('http://localhost:5173/notes/', '');
+      const items: TTag[] = await socket.emitWithAck('searchNoteBlocks', { uuid: id });
+      setTagsItems(items);
     };
 
     tags.forEach((tag) => {
@@ -168,9 +168,9 @@ export function Editor({ data, onChange, placeholder = 'Type your text here' }: 
         tag.removeEventListener('click', listener);
       });
     };
-  }, [data]);
+  }, [data, setTagsItems]);
 
-  return <div id="editorjs" />;
+  return <div id={id || 'editorjs'} />;
 }
 
 export default Editor;

@@ -56,9 +56,9 @@ export default class InlineMention {
     return document.createElement('span');
   }
 
-  surround(range: any) {
-    console.log('surround', range);
-  }
+  // surround(range: any) {
+  //   console.log('surround', range);
+  // }
 
   checkState() {
     const a = this.api.selection.findParentTag('A') as HTMLAnchorElement;
@@ -98,7 +98,6 @@ export default class InlineMention {
 
   getMentions(q?: string) {
     mentionsService.getMentions(q).then((users) => {
-      console.log('users', users);
       if (this.nodes.userList) {
         this.nodes.userList.innerHTML = '';
       }

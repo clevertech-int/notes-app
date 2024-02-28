@@ -1,0 +1,44 @@
+.peekList {
+  margin: 24px -16px -16px;
+  flex: 1;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  overflow: hidden;
+
+  .peekCollapse {
+    border-radius: 0;
+    border: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    :global(.ant-collapse-header) {
+      background-color: #f4f6fb;
+      align-items: center !important;
+      border-radius: 0 !important;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+    :global(.ant-collapse-content) {
+      border: 0;
+    }
+  }
+
+  .peekCard {
+    border-radius: 0 !important;
+    border: 0;
+    overflow: auto;
+
+    &:global(.ant-collapse-item-active) {
+      flex: 1;
+    }
+    :global(.ant-collapse-content-box) {
+      padding: 0px 16px !important;
+    }
+
+    button {
+      height: 26px;
+    }
+  }
+}

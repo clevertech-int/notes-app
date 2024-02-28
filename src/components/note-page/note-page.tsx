@@ -1,23 +1,17 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { socket } from '@notes/data';
-import { Editor, NoteList, OnChangeEditor, Sidebar } from '@notes/components';
+import { Editor, NoteList, NotePeek, OnChangeEditor, Sidebar } from '@notes/components';
 import styles from './note-page.module.less';
 import cn from 'classnames';
-import { Button, Col, Collapse, Row, Typography } from 'antd';
-import { IconX } from '@tabler/icons-react';
+import { Col, Row } from 'antd';
 import { OutputData } from '@editorjs/editorjs';
-
-const { Text } = Typography;
+import { TNoteContent, TTag } from '@notes/types';
 
 const notes = [
   { id: 'note-1', author: 'anonymous' },
   { id: 'note-2', author: 'anonymous' },
   { id: 'note-3', author: 'anonymous' },
-  { id: 'note-4', author: 'anonymous' },
-];
-const peekedNotes = [
-  { id: 'note-1', author: 'anonymous' },
   { id: 'note-4', author: 'anonymous' },
 ];
 
@@ -27,6 +21,10 @@ export function NotePage() {
   const { noteId } = useParams();
 
   const [content, setContent] = useState<TContent | undefined>();
+  const [peekedNotes, setPeekedNotes] = useState<TNoteContent[]>([]);
+  const [expandedNotes, setExpandedNotes] = useState<string[]>([]);
+
+  const [tagsItems, setTagsItems] = useState<TTag[]>([]);
 
   useEffect(() => {
     if (noteId) {
@@ -53,16 +51,37 @@ export function NotePage() {
     [noteId],
   );
 
+  const peekNote = async (id: string) => {
+    const note: TNoteContent = await socket.emitWithAck('findOneNote', id);
+    setPeekedNotes((current) => {
+      const newPeeked = [...current];
+      const index = newPeeked.findIndex((n) => note.noteId === n.noteId);
+      if (index !== -1) {
+        newPeeked.splice(index, 1);
+      } else {
+        newPeeked.push(note);
+        setExpandedNotes((expanded) => [...expanded, note.noteId]);
+      }
+      return newPeeked;
+    });
+  };
+
+  const handleExpandedNotes = (key: string | string[]) => {
+    if (Array.isArray(key)) {
+      setExpandedNotes(key);
+    }
+  };
+
   return (
     <Row wrap={false} gutter={16} className={styles.container}>
       <Sidebar id="notes-list" title="List of notes" side="left">
-        <NoteList notes={notes} peekedNotes={peekedNotes} />
+        <NoteList notes={notes} peekedNotes={peekedNotes} peekNote={peekNote} />
       </Sidebar>
       <Col flex={1}>
         <Row className={styles.content} wrap={false}>
           <Col flex={1} className={styles.section}>
             {noteId && content?.noteId === noteId ? (
-              <Editor onChange={handleEditorChange} data={content} />
+              <Editor onChange={handleEditorChange} data={content} setTagsItems={setTagsItems} />
             ) : (
               <div className={styles.unselectedNoteMessage}>
                 <p>Select a note beside</p>
@@ -70,31 +89,23 @@ export function NotePage() {
             )}
           </Col>
           <Col className={cn(styles.section, styles.tags)} id="refs">
-            Tags
+            {tagsItems.map((item, i) => (
+              <div key={item.noteId + i} className={styles.tagItem}>
+                <Link to={`/notes/${item.noteId}`}>{item.noteId}</Link>
+                <div dangerouslySetInnerHTML={{ __html: item.body }} />
+              </div>
+            ))}
           </Col>
         </Row>
       </Col>
       <Sidebar id="notes-peek" title="Notes peek" side="right">
-        <div className={styles.peekList}>
-          <Collapse
-            size="small"
-            defaultActiveKey={peekedNotes.map((note) => note.id)}
-            className={styles.peekCollapse}
-            items={peekedNotes.map((note) => ({
-              key: note.id,
-              label: (
-                <Row wrap={false} justify="space-between" align="middle">
-                  <Text>{note.id}</Text>
-                  <Button type="link" onClick={(e) => e.stopPropagation()}>
-                    <IconX size={16} />
-                  </Button>
-                </Row>
-              ),
-              children: <Text>That is the mocked note content.</Text>,
-              className: styles.peekCard,
-            }))}
-          />
-        </div>
+        <NotePeek
+          peekedNotes={peekedNotes}
+          peekNote={peekNote}
+          activeKey={expandedNotes}
+          handleExpandedNotes={handleExpandedNotes}
+          setTagsItems={setTagsItems}
+        />
       </Sidebar>
     </Row>
   );
