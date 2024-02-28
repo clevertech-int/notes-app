@@ -154,7 +154,8 @@ export function Editor({
 
     const listener = async (e: any) => {
       e.preventDefault();
-      const id = (e.target as HTMLAnchorElement).href.replace('http://localhost:5173/notes/', '');
+      const { href } = e.target as HTMLAnchorElement;
+      const [id] = href.split('/').reverse();
       const items: TTag[] = await socket.emitWithAck('searchNoteBlocks', { uuid: id });
       setTagsItems(items);
     };
