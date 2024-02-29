@@ -59,6 +59,9 @@ export const editorConfig = {
   paragraph: {
     class: CustomParagraph,
     inlineToolbar: true,
+    config: {
+      preserveBlank: true,
+    },
   },
   header: {
     class: Header,
